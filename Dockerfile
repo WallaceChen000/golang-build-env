@@ -6,6 +6,8 @@ ENV LC_ALL=en_US.UTF-8
 ENV LANG=en_US.UTF-8
 ENV LANGUAGE=en_US.UTF-8
 ENV DEBIAN_FRONTEND noninteractive
+# will be overwritten by .bashrc, so mark it.
+#ENV PS1='\[\e]0;\u@\h: \w\a\]${debian_chroot:+($debian_chroot)}\e[0;31m\u@\h:\w\e[0m\$ '
 
 EXPOSE 2224
 
@@ -27,7 +29,7 @@ RUN apt-get install -qq -y protobuf-compiler   #for protoc
 
 
 # ssh enable
-RUN dpkg-reconfigure openssh-server && echo 'root:SystemControl' | chpasswd && \
+RUN dpkg-reconfigure openssh-server && echo 'root:PmdjwEsUpfS8YAmD' | chpasswd && \
     sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config && \
     sed -i 's/#PermitRootLogin yes/PermitRootLogin yes/' /etc/ssh/sshd_config && \
     sed -i 's/#PasswordAuthentication yes/PasswordAuthentication yes/' /etc/ssh/sshd_config && \
@@ -39,13 +41,15 @@ ENV GOLANG_ARCH_amd64=amd64 GOLANG_ARCH_arm=armv6l GOLANG_ARCH_arm64=arm64 GOLAN
     GOPATH=/go GOROOT=/usr/local/go GO111MODULE=auto PATH=/go/bin:/usr/local/go/bin:${PATH} SHELL=/bin/bash
 
 #RUN wget -O - https://storage.googleapis.com/golang/go1.16.4.linux-${!GOLANG_ARCH}.tar.gz | tar -xzf - -C /usr/local
-RUN wget -O - https://storage.googleapis.com/golang/go1.17.4.linux-amd64.tar.gz | tar -xzf - -C /usr/local
+#RUN wget -O - https://storage.googleapis.com/golang/go1.17.4.linux-amd64.tar.gz | tar -xzf - -C /usr/local
+RUN wget -O - https://go.dev/dl/go1.19.5.linux-amd64.tar.gz | tar -xzf - -C /usr/local
+
 
 RUN if [ "${ARCH}" == "amd64" ]; then \
     curl -sL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | sh -s v1.39.0; \
     fi
 
-WORKDIR /root
+WORKDIR /go
 
 # Set cron job
 
