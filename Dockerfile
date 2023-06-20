@@ -24,9 +24,11 @@ RUN apt-get install -qq -y \
     iproute2
 
 RUN apt-get install -qq -y gcc ca-certificates git less file xz-utils unzip
-RUN apt-get install -qq -y protobuf-compiler   #for protoc
+RUN apt-get install -qq -y protobuf-compiler  #for protoc
 #RUN rm -f /bin/sh && ln -s /bin/bash /bin/sh
 
+# Install docker 20.10
+RUN curl https://releases.rancher.com/install-docker/20.10.sh | sh
 
 # ssh enable
 RUN dpkg-reconfigure openssh-server && echo 'root:PmdjwEsUpfS8YAmD' | chpasswd && \
@@ -59,8 +61,7 @@ RUN mkdir -p /etc/service/runservice/ && \
     chmod a+x /etc/service/runservice/run
 
 # Install rootfs
-COPY ./rootfs.tar.gz /root/
-RUN tar -xvf /root/rootfs.tar.gz -C / && rm -f /root/rootfs.tar.gz
+ADD rootfs.tar.gz /
 
 # Install pip package
 RUN pip install -U protobuf==4.21.7 grpcio==1.47.0 grpcio-tools==1.47.0
@@ -72,7 +73,7 @@ RUN curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add - && ec
 RUN apt purge nodejs -y && curl -sL https://deb.nodesource.com/setup_14.x | bash - && apt install nodejs -y -qq
 
 # Use baseimage-docker's init system.
-CMD ["/sbin/my_init"]
+#CMD ["/sbin/my_init"]
 
 # Clean up APT when done.
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*

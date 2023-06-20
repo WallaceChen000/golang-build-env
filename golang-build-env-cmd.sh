@@ -21,7 +21,9 @@ BLUE='\e[0;34m'
 : "${BUILD_SERVER_PORT:="2224"}"
 : "${BUILD_SERVER_PASSWD:="PmdjwEsUpfS8YAmD"}"
 : "${BUILD_SERVER_WORKDIR:="/go"}"
- 
+
+: "${BUILD_VER:="20230620"}"
+
 message() {
     echo "Please run:" >&2
     echo "            $0 check                  check packages in the environment.       " 1>&2
@@ -60,12 +62,12 @@ build_img() {
     build_rootfs;
 
     build_date=$(date +%Y%m%d%H%M%S)
+
     docker images --quiet --filter=dangling=true | xargs --no-run-if-empty docker rmi
 
     echo "Building golang-build-env image"
 
-    #docker build -t wallacechendockerhub/golang-build-env:latest . --no-cache -f Dockerfile
-    docker build -t wallacechendockerhub/golang-build-env:go1.19.5 . --no-cache -f Dockerfile
+    docker build -t wallacechendockerhub/golang-build-env:go1.19.5-build${BUILD_VER} . --no-cache -f Dockerfile
 }
 
 create_persistent_volume() {
@@ -90,8 +92,7 @@ run_gbe() {
         -v /var/run/docker.sock:/var/run/docker.sock \
         --privileged=true \
         -e TZ=$(readlink /etc/localtime) \
-        -u root -idt wallacechendockerhub/golang-build-env:go1.19.5
-        #-u root -idt wallacechendockerhub/golang-build-env:latest
+        -u root -idt wallacechendockerhub/golang-build-env:go1.19.5-build${BUILD_VER}
 }
 
 stop_gbe() {
