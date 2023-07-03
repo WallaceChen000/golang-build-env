@@ -21,7 +21,8 @@ RUN apt-get install -qq -y \
     vim \
     ncdu \
     python3-pip \
-    iproute2
+    iproute2 \
+    sshfs
 
 RUN apt-get install -qq -y gcc ca-certificates git less file xz-utils unzip
 RUN apt-get install -qq -y protobuf-compiler  #for protoc

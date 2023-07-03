@@ -22,7 +22,7 @@ BLUE='\e[0;34m'
 : "${BUILD_SERVER_PASSWD:="PmdjwEsUpfS8YAmD"}"
 : "${BUILD_SERVER_WORKDIR:="/go"}"
 
-: "${BUILD_VER:="20230620"}"
+: "${BUILD_VER:="20230703"}"
 
 message() {
     echo "Please run:" >&2
